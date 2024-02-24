@@ -11,13 +11,6 @@ from huggingface_hub import hf_hub_download
 from einops import repeat
 import torchvision.transforms as transforms
 from utils.utils import instantiate_from_config
-sys.path.insert(0, "scripts/evaluation")
-from funcs import (
-    batch_ddim_sampling,
-    load_model_checkpoint,
-    get_latent_z,
-    save_videos
-)
 
 def download_model():
     REPO_ID = 'Doubiiu/DynamiCrafter'
@@ -28,7 +21,6 @@ def download_model():
         local_file = os.path.join('./checkpoints/dynamicrafter_256_v1/', filename)
         if not os.path.exists(local_file):
             hf_hub_download(repo_id=REPO_ID, filename=filename, local_dir='./checkpoints/dynamicrafter_256_v1/', force_download=True)
-    
 
 def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
     download_model()
@@ -92,26 +84,14 @@ def infer(image, prompt, steps=50, cfg_scale=7.5, eta=1.0, fs=3, seed=123):
     model = model.cpu()
     return video_path
 
+# Example input data
+image = ...
+prompt = ...
+steps = ...
+cfg_scale = ...
+eta = ...
+fs = ...
+seed = ...
 
-
-
-
-
-i2v_examples = [
-    ['prompts/art.png', 'man fishing in a boat at sunset', 50, 7.5, 1.0, 3, 234],
-    ['prompts/boy.png', 'boy walking on the street', 50, 7.5, 1.0, 3, 125],
-    ['prompts/dance1.jpeg', 'two people dancing', 50, 7.5, 1.0, 3, 116],
-    ['prompts/fire_and_beach.jpg', 'a campfire on the beach and the ocean waves in the background', 50, 7.5, 1.0, 3, 111],
-    ['prompts/girl3.jpeg', 'girl talking and blinking', 50, 7.5, 1.0, 3, 111],
-    ['prompts/guitar0.jpeg', 'bear playing guitar happily, snowing', 50, 7.5, 1.0, 3, 122],
-    ['prompts/surf.png', 'a man is surfing', 50, 7.5, 1.0, 3, 123],
-]
-css = """#input_img {max-width: 256px !important} #output_vid {max-width: 256px; max-height: 256px}"""
-
-
-        i2v_end_btn.click(inputs=[i2v_input_image, i2v_input_text, i2v_steps, i2v_cfg_scale, i2v_eta, i2v_motion, i2v_seed],
-                        outputs=[i2v_output_video],
-                        fn = infer
-        )
-
-dynamicrafter_iface.queue(max_size=12).launch(show_api=True)
+# Function call
+infer(image, prompt, steps, cfg_scale, eta, fs, seed)
